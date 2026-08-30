@@ -12,7 +12,7 @@ const (
 	ArrowWidth  = 60
 
 	BallMaxPower = 800
-	Friction     = 300
+	Friction     = 200
 )
 
 type BallState int
@@ -29,18 +29,23 @@ type Arrow struct {
 	active bool
 	angle  float32
 	rect   rl.Rectangle
+
+	texture rl.Texture2D
 }
 
 func NewArrow(pos *rl.Vector2) *Arrow {
+	texture := rl.LoadTexture("assets/arrow.png")
+
 	rect := rl.Rectangle{
 		X:      pos.X,
 		Y:      pos.Y,
-		Width:  ArrowWidth,
-		Height: ArrowHeight,
+		Width:  float32(texture.Width),
+		Height: float32(texture.Height),
 	}
 	return &Arrow{
-		active: true,
-		rect:   rect,
+		active:  true,
+		rect:    rect,
+		texture: texture,
 	}
 }
 
@@ -59,7 +64,8 @@ type Ball struct {
 
 	arrow *Arrow
 
-	state BallState
+	state   BallState
+	texture rl.Texture2D
 }
 
 func NewBall() *Ball {
@@ -69,16 +75,18 @@ func NewBall() *Ball {
 	pos := rl.Vector2{X: float32(screenW / 2), Y: float32(screenH - BallRadius - 40)}
 
 	arrow := NewArrow(&pos)
+	texture := rl.LoadTexture("assets/ball.png")
 
 	return &Ball{
 		position: pos,
-		radius:   float32(BallRadius),
+		radius:   float32(texture.Height / 2),
 
 		maxPower: BallMaxPower,
 		friction: Friction,
 		arrow:    arrow,
 
-		state: Aiming,
+		state:   Aiming,
+		texture: texture,
 	}
 }
 
@@ -219,29 +227,70 @@ func (b *Ball) CheckWallCollision() {
 }
 
 func (b *Ball) DrawBall() {
-	rl.DrawCircleV(b.position, b.radius, rl.Maroon)
-	// rl.DrawLineV(b.position, rl.Vector2Scale(b.position, 10), rl.LightGray)
-
-	if b.arrow.active {
-		rect := rl.Rectangle{
-			X:      b.position.X,
-			Y:      b.position.Y,
-			Width:  ArrowWidth,
-			Height: ArrowHeight,
-		}
-
-		origin := rl.Vector2{
-			X: -(b.radius + 10),
-			Y: rect.Height / 2,
-		}
-
-		rl.DrawRectanglePro(
-			rect,
-			origin,
-			b.arrow.angle*rl.Rad2deg,
-			rl.Blue,
-		)
+	source := rl.Rectangle{
+		X:      0,
+		Y:      0,
+		Width:  float32(b.texture.Width),
+		Height: float32(b.texture.Height),
 	}
+
+	dest := rl.Rectangle{
+		X:      b.position.X,
+		Y:      b.position.Y,
+		Width:  float32(b.texture.Width),
+		Height: float32(b.texture.Height),
+	}
+
+	origin := rl.Vector2{
+		X: float32(b.texture.Width) / 2,
+		Y: float32(b.texture.Height) / 2,
+	}
+
+	rl.DrawTexturePro(
+		b.texture,
+		source,
+		dest,
+		origin,
+		0,
+		rl.White,
+	)
+
+	// Draw arrow
+	if b.arrow.active {
+		b.DrawArrow()
+	}
+}
+
+func (b *Ball) DrawArrow() {
+	texture := b.arrow.texture
+
+	source := rl.Rectangle{
+		X:      0,
+		Y:      0,
+		Width:  float32(texture.Width),
+		Height: float32(texture.Height),
+	}
+
+	dest := rl.Rectangle{
+		X:      b.position.X,
+		Y:      b.position.Y,
+		Width:  float32(texture.Width),
+		Height: float32(texture.Height),
+	}
+
+	origin := rl.Vector2{
+		X: -float32(b.texture.Height),
+		Y: float32(texture.Height) / 2,
+	}
+
+	rl.DrawTexturePro(
+		texture,
+		source,
+		dest,
+		origin,
+		b.arrow.angle*rl.Rad2deg,
+		rl.White,
+	)
 }
 
 func (b *Ball) DrawPowerBar() {

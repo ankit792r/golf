@@ -11,6 +11,9 @@ func main() {
 	rl.InitWindow(SCREEN_W, SCREEN_H, "Go Golf")
 	defer rl.CloseWindow()
 
+	background := rl.LoadTexture("assets/ground.png")
+	defer rl.UnloadTexture(background)
+
 	rl.SetTargetFPS(60)
 
 	ball := NewBall()
@@ -20,8 +23,9 @@ func main() {
 		ball.UpdateBall(dt)
 
 		rl.BeginDrawing()
+		rl.ClearBackground(rl.DarkGray)
+		rl.DrawTexture(background, 0, 0, rl.White)
 
-		rl.ClearBackground(rl.RayWhite)
 		ball.DrawBall()
 		ball.DrawPowerBar()
 
