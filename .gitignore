@@ -1,3 +1,4 @@
 # Local Go path for Devbox
 .go/
 .devbox
+dist/

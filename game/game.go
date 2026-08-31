@@ -1,6 +1,7 @@
 package game
 
 import (
+	"embed"
 	"fmt"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -40,19 +41,19 @@ type Game struct {
 	quitBtn button
 }
 
-func New() *Game {
+func New(assets embed.FS) *Game {
 	g := &Game{
 		scene:      sceneMenu,
-		background: rl.LoadTexture("assets/ground.png"),
-		ballTex:    rl.LoadTexture("assets/ball.png"),
-		holeTex:    rl.LoadTexture("assets/hole.png"),
-		arrowTex:   rl.LoadTexture("assets/arrow.png"),
+		background: loadPNG(assets, "assets/ground.png"),
+		ballTex:    loadPNG(assets, "assets/ball.png"),
+		holeTex:    loadPNG(assets, "assets/hole.png"),
+		arrowTex:   loadPNG(assets, "assets/arrow.png"),
 	}
 	g.obstacleTex = [kindCount]rl.Texture2D{
-		rl.LoadTexture("assets/obstical-small.png"),
-		rl.LoadTexture("assets/obstical-medium.png"),
-		rl.LoadTexture("assets/obstical-large.png"),
-		rl.LoadTexture("assets/obstical-xlarge.png"),
+		loadPNG(assets, "assets/obstical-small.png"),
+		loadPNG(assets, "assets/obstical-medium.png"),
+		loadPNG(assets, "assets/obstical-large.png"),
+		loadPNG(assets, "assets/obstical-xlarge.png"),
 	}
 
 	g.ball = newBall(g.ballTex, g.arrowTex)
@@ -66,12 +67,12 @@ func New() *Game {
 	return g
 }
 
-func Run() {
+func Run(assets embed.FS) {
 	rl.InitWindow(ScreenWidth, ScreenHeight, "Go Golf")
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(60)
 
-	g := New()
+	g := New(assets)
 	defer g.Close()
 
 	for !rl.WindowShouldClose() && !g.quit {
