@@ -51,6 +51,7 @@ func NewArrow(pos *rl.Vector2) *Arrow {
 
 type Ball struct {
 	position rl.Vector2
+	startPos rl.Vector2
 	radius   float32
 
 	// Charging
@@ -79,6 +80,7 @@ func NewBall() *Ball {
 
 	return &Ball{
 		position: pos,
+		startPos: pos,
 		radius:   float32(texture.Height / 2),
 
 		maxPower: BallMaxPower,
@@ -195,6 +197,11 @@ func (b *Ball) resetBall() {
 
 	b.power = 0
 	b.velocity = rl.Vector2Zero()
+}
+
+func (b *Ball) ResetToStart() {
+	b.position = b.startPos
+	b.resetBall()
 }
 
 func (b *Ball) CheckWallCollision() {

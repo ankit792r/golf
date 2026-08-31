@@ -24,13 +24,18 @@ func main() {
 		ball.UpdateBall(dt)
 		hole.UpdateHole(dt)
 
+		if hole.Contains(ball) {
+			ball.ResetToStart()
+			hole.RandomizePosition(ball.position)
+		}
+
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.DarkGray)
 		rl.DrawTexture(background, 0, 0, rl.White)
 
+		hole.DrawHole()
 		ball.DrawBall()
 		ball.DrawPowerBar()
-		hole.DrawHole()
 
 		rl.EndDrawing()
 	}
