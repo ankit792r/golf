@@ -114,13 +114,17 @@ func (g *Game) updatePlay(dt float32) {
 		return
 	}
 
+	if g.ball.state != sinking && g.hole.contains(g.ball) {
+		g.ball.startSink(g.hole.position)
+	}
+
 	wasMoving := g.ball.state == moving
 	g.ball.update(dt, g.obstacles)
 	if !wasMoving && g.ball.state == moving {
 		g.strokes++
 	}
 
-	if g.hole.contains(g.ball) {
+	if g.ball.finishedSink() {
 		g.completeLevel()
 	}
 }
