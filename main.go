@@ -17,10 +17,12 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	ball := NewBall()
+	hole := NewHole()
 
 	for !rl.WindowShouldClose() {
 		dt := rl.GetFrameTime()
 		ball.UpdateBall(dt)
+		hole.UpdateHole(dt)
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.DarkGray)
@@ -28,6 +30,7 @@ func main() {
 
 		ball.DrawBall()
 		ball.DrawPowerBar()
+		hole.DrawHole()
 
 		rl.EndDrawing()
 	}

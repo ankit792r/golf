@@ -12,7 +12,7 @@ const (
 	ArrowWidth  = 60
 
 	BallMaxPower = 800
-	Friction     = 200
+	Friction     = 100
 )
 
 type BallState int
